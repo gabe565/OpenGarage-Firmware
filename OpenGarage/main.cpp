@@ -1213,11 +1213,13 @@ void check_status() {
         if(door_status == DOOR_STATUS_REMAIN_OPEN)  {						// MQTT: If door open...
           mqttclient.publish(og.options[OPTION_NAME].sval + "/OUT/STATE","OPEN");
           mqttclient.publish(og.options[OPTION_NAME].sval,"Open"); //Support existing mqtt code
+          mqttclient.publish(og.options[OPTION_NAME].sval + "/OUT/DIST", String(distance));
           //DEBUG_PRINTLN(curr_utc_time + " Sending MQTT State otification: OPEN");
         } 
         else if(door_status == DOOR_STATUS_REMAIN_CLOSED) {					// MQTT: If door closed...
           mqttclient.publish(og.options[OPTION_NAME].sval + "/OUT/STATE","CLOSED");
           mqttclient.publish(og.options[OPTION_NAME].sval,"Closed"); //Support existing mqtt code
+          mqttclient.publish(og.options[OPTION_NAME].sval + "/OUT/DIST", String(distance));
           //DEBUG_PRINTLN(curr_utc_time + " Sending MQTT State Notification: CLOSED");
         }
       }
