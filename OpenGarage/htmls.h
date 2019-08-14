@@ -169,7 +169,7 @@ $('#btn_opts').click(function(e){window.open('vo', '_top');});
 $('#btn_log').click(function(e){window.open('vl', '_top');});
 $('#btn_cll').click(function(e){
 if(confirm('Clear log data?')){
-var comm = 'clearlog?dkey='+($('#dkey').val());
+var comm = 'clearlog?dkey='+encodeURIComponent($('#dkey').val());
 clear_msg();
 $.getJSON(comm, function(jd) {
 if(jd.result!=1) show_msg('Check device key and try again.',2000,'red');
@@ -179,7 +179,7 @@ else { show_msg('Log data cleared',2000,'green'); }
 });
 $('#btn_rbt').click(function(e){
 if(confirm('Reboot the device now?')){
-var comm = 'cc?reboot=1&dkey='+($('#dkey').val());
+var comm = 'cc?reboot=1&dkey='+encodeURIComponent($('#dkey').val());
 clear_msg();
 $.getJSON(comm, function(jd) {
 if(jd.result!=1) show_msg('Check device key and try again.',2000,'red');
@@ -193,7 +193,7 @@ setTimeout(function(){location.reload(true);}, 10000);
 });
 $('#btn_rap').click(function(e){
 if(confirm('Reset the device to AP mode?')){
-var comm = 'cc?apmode=1&dkey='+($('#dkey').val());
+var comm = 'cc?apmode=1&dkey='+encodeURIComponent($('#dkey').val());
 clear_msg();
 $.getJSON(comm, function(jd) {
 if(jd.result!=1) show_msg('Check device key and try again.',2000,'red');
@@ -205,7 +205,7 @@ $('#msg').html('Device is now in AP mode. Log on<br>to SSID OG_xxxxxx, then <br>
 }
 });
 $('#btn_click').click(function(e) {
-var comm = 'cc?click=1&dkey='+($('#dkey').val());
+var comm = 'cc?click=1&dkey='+encodeURIComponent($('#dkey').val());
 $.getJSON(comm)
 .done(function( jd ) {
 if(jd.result!=1) {
