@@ -13,7 +13,7 @@ For Firmware release notes, go to [https://github.com/OpenGarage/OpenGarage-Firm
 * Arduino (https://arduino.cc) with ESP8266 core 2.4.1 or above for Arduino (https://github.com/esp8266/Arduino/releases/tag/2.4.1)
 * Instead of installing Arduino, you can also directly use make (this folder includes a copy of **makeESPArduino**: https://github.com/plerup/makeEspArduino)
 * Blynk library for Arduino (https://github.com/blynkkk/blynk-library)
-* MQTT PubSUbClient https://github.com/Imroy/pubsubclient/releases
+* MQTT PubSubClient https://github.com/knolleary/pubsubclient/releases
 * AM2320 library: https://github.com/hibikiledo/AM2320/releases
 * OneWire library: https://www.pjrc.com/teensy/td_libs_OneWire.html
 * DallasTemperature library: https://github.com/milesburton/Arduino-Temperature-Control-Library/releases

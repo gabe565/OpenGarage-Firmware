@@ -27,7 +27,7 @@
 
 #include <BlynkSimpleEsp8266.h>
 #include <DNSServer.h>
-#include <PubSubClient.h> //https://github.com/Imroy/pubsubclient
+#include <PubSubClient.h>
 
 #include "pitches.h"
 #include "OpenGarage.h"
@@ -47,6 +47,7 @@ static Ticker restart_ticker;
 
 static WiFiClient wificlient;
 PubSubClient mqttclient(wificlient);
+
 
 static String scanned_ssids;
 static byte read_cnt = 0;
@@ -695,14 +696,16 @@ void on_ap_debug() {
 }
 
 // MQTT callback to read "Button" requests
-void mqtt_callback(const MQTT::Publish& pub) { 
+void mqtt_callback(char *topic, byte *bytePayload, unsigned int length) {
+  String payload((char*)bytePayload);
+
   //DEBUG_PRINT("MQTT Message Received: ");
-  //DEBUG_PRINT(pub.topic());
+  //DEBUG_PRINT(payload);
   //DEBUG_PRINT(" Data: ");
-  //DEBUG_PRINTLN(pub.payload_string());
+  //DEBUG_PRINTLN(topic);
 
   //Accept button on any topic for backwards compat with existing code - use IN messages below if possible
-  if (pub.payload_string() == "Button") {
+  if (topic == "Button") {
     DEBUG_PRINTLN(F("MQTT Button request received, change door state"));
     if(!og.options[OPTION_ALM].ival) {
       // if alarm is not enabled, trigger relay right away
@@ -714,10 +717,10 @@ void mqtt_callback(const MQTT::Publish& pub) {
     }
   }
   //Accept click for consistency with api, open and close should be used instead, use IN topic if possible
-  if (pub.topic() == og.options[OPTION_NAME].sval +"/IN/STATE" ){
+  if (payload == og.options[OPTION_NAME].sval + "/IN/STATE"){
     DEBUG_PRINT(F("MQTT IN Message detected, check data for action, Data:"));
-    DEBUG_PRINTLN(pub.payload_string());
-    if ( (pub.payload_string() == "close" && door_status) || (pub.payload_string() == "open" && !door_status) || pub.payload_string() == "click") {
+    DEBUG_PRINTLN(topic);
+    if ((topic == "close" && door_status) || (topic == "open" && !door_status) || topic == "click") {
       DEBUG_PRINTLN(F("Command is valid based on existing state, trigger change"));
       if(!og.options[OPTION_ALM].ival) {
         // if alarm is not enabled, trigger relay right away
@@ -727,12 +730,12 @@ void mqtt_callback(const MQTT::Publish& pub) {
         // else, set alarm
         og.set_alarm();
       }
-    }else if ( (pub.payload_string() == "close" && !door_status) || (pub.payload_string() == "open" && door_status) ){
+    } else if ((topic == "close" && !door_status) || (topic == "open" && door_status)) {
       DEBUG_PRINTLN(F("Command request not valid, door already in requested state"));
     }
     else {
       DEBUG_PRINT(F("Unrecognized MQTT data/command:"));
-      DEBUG_PRINTLN(pub.payload_string());
+      DEBUG_PRINTLN(topic);
     }
   }
 }
@@ -929,11 +932,23 @@ bool mqtt_connect_subscibe() {
   if(curr_utc_time > mqtt_subscribe_timeout) {
     if (!mqttclient.connected()) {
       DEBUG_PRINT(F("MQTT Not connected- (Re)connect MQTT"));
-      mqttclient.set_server(og.options[OPTION_MQTT].sval, 1883);
-      if (mqttclient.connect(og.options[OPTION_NAME].sval)) {
-        mqttclient.set_callback(mqtt_callback); 		
-        mqttclient.subscribe(og.options[OPTION_NAME].sval);
-        mqttclient.subscribe(og.options[OPTION_NAME].sval +"/IN/#");
+      mqttclient.setServer(og.options[OPTION_MQTT].sval.c_str(), og.options[OPTION_MQPT].ival);
+      bool connected = false;
+      if (og.options[OPTION_MQUN].sval.length() > 0 && og.options[OPTION_MQPW].sval.length() > 0) {
+        connected = mqttclient.connect(
+          og.options[OPTION_NAME].sval.c_str(),
+          og.options[OPTION_MQUN].sval.c_str(),
+          og.options[OPTION_MQPW].sval.c_str()
+        );
+      } else {
+        connected = mqttclient.connect(
+          og.options[OPTION_NAME].sval.c_str()
+        );
+      }
+      if (connected) {
+        mqttclient.setCallback(mqtt_callback);
+        mqttclient.subscribe(og.options[OPTION_NAME].sval.c_str());
+        mqttclient.subscribe((og.options[OPTION_NAME].sval +"/IN/#").c_str());
         DEBUG_PRINTLN(F("......Success, Subscribed to MQTT Topic"));
         return true;
       }else {
@@ -974,7 +989,7 @@ void perform_notify(String s) {
   if(og.options[OPTION_MQTT].sval.length()>8) {
     if (mqttclient.connected()) {
         DEBUG_PRINTLN(" Sending MQTT Notification");
-        mqttclient.publish(og.options[OPTION_NAME].sval + "/OUT/NOTIFY",s); 
+        mqttclient.publish((og.options[OPTION_NAME].sval + "/OUT/NOTIFY").c_str(),s.c_str());
     }
   }
 }
@@ -1211,13 +1226,13 @@ void check_status() {
       if((og.options[OPTION_MQTT].sval.length()>8) && (mqttclient.connected())) {
         DEBUG_PRINTLN(F(" Update MQTT (State Refresh)"));
         if(door_status == DOOR_STATUS_REMAIN_OPEN)  {						// MQTT: If door open...
-          mqttclient.publish(og.options[OPTION_NAME].sval + "/OUT/STATE","OPEN");
-          mqttclient.publish(og.options[OPTION_NAME].sval,"Open"); //Support existing mqtt code
+          mqttclient.publish((og.options[OPTION_NAME].sval + "/OUT/STATE").c_str(), "OPEN");
+          mqttclient.publish(og.options[OPTION_NAME].sval.c_str(), "Open"); //Support existing mqtt code
           //DEBUG_PRINTLN(curr_utc_time + " Sending MQTT State otification: OPEN");
         } 
         else if(door_status == DOOR_STATUS_REMAIN_CLOSED) {					// MQTT: If door closed...
-          mqttclient.publish(og.options[OPTION_NAME].sval + "/OUT/STATE","CLOSED");
-          mqttclient.publish(og.options[OPTION_NAME].sval,"Closed"); //Support existing mqtt code
+          mqttclient.publish((og.options[OPTION_NAME].sval + "/OUT/STATE").c_str(), "CLOSED");
+          mqttclient.publish(og.options[OPTION_NAME].sval.c_str(), "Closed"); //Support existing mqtt code
           //DEBUG_PRINTLN(curr_utc_time + " Sending MQTT State Notification: CLOSED");
         }
       }
