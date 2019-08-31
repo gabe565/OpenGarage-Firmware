@@ -1286,8 +1286,13 @@ void time_keeping() {
   static ulong time_keeping_timeout = 0;
 
   if(!configured) {
-    DEBUG_PRINTLN(F("Set time server"));
-    configTime(0, 0, "time.google.com", "pool.ntp.org", NULL);
+    if (og.options[OPTION_NTP].sval.length() > 0) {
+      DEBUG_PRINTLN(F("Set custom time server"));
+      configTime(0, 0, og.options[OPTION_NTP].sval.c_str(), "time.google.com", "pool.ntp.org");
+    } else {
+      DEBUG_PRINTLN(F("Set default time server"));
+      configTime(0, 0, "time.google.com", "pool.ntp.org", NULL);
+    }
     configured = true;
   }
 

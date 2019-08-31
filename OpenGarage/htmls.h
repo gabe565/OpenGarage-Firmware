@@ -384,6 +384,7 @@ const char sta_options_html[] PROGMEM = R"(<head><title>OpenGarage</title><meta 
 <div id='div_other' style='display:none;'>
 <table cellpadding=2>
 <tr><td><b>HTTP Port:</b></td><td><input type='text' size=5 maxlength=5 id='htp' value=0 data-mini='true'></td></tr>
+<tr><td><b>NTP Server:</b></td><td><input type='text' size=16 maxlength=20 id='ntp' value='' data-mini='true'></td></tr>
 <tr><td colspan=2><input type='checkbox' id='usi' data-mini='true'><label for='usi'>Use Static IP</label></td></tr>
 <tr><td><b>Device IP:</b></td><td><input type='text' size=15 maxlength=15 id='dvip' data-mini='true' disabled></td></tr>
 <tr><td><b>Gateway IP:</b></td><td><input type='text' size=15 maxlength=15 id='gwip' data-mini='true' disabled></td></tr>
@@ -452,6 +453,7 @@ comm+='&alm='+$('#alm').val();
 comm+='&lsz='+$('#lsz').val();
 comm+='&tsn='+$('#tsn').val();
 comm+='&htp='+$('#htp').val();
+comm+='&ntp='+$('#ntp').val();
 comm+='&cdt='+$('#cdt').val();
 comm+='&dri='+$('#dri').val();
 comm+='&sto='+eval_cb('#to_cap');
@@ -511,6 +513,7 @@ $('#dth').val(jd.dth);
 $('#vth').val(jd.vth);
 $('#riv').val(jd.riv);
 $('#htp').val(jd.htp);
+$('#ntp').val(jd.ntp);
 $('#cdt').val(jd.cdt);
 $('#dri').val(jd.dri);
 if(jd.sto) $('#to_cap').attr('checked',true).checkboxradio('refresh');
