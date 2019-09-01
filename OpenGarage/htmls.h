@@ -311,6 +311,7 @@ const char sta_options_html[] PROGMEM = R"(<head><title>OpenGarage</title><meta 
 <fieldset data-role='controlgroup' data-type='horizontal'>
 <input type='radio' name='opt_group' id='basic' onclick='toggle_opt()' checked><label for='basic'>Basic</label>
 <input type='radio' name='opt_group' id='cloud' onclick='toggle_opt()'><label for='cloud'>Integration</label>
+<input type='radio' name='opt_group' id='mqtt_opt' onclick='toggle_opt()'><label for='mqtt_opt'>MQTT</label>
 <input type='radio' name='opt_group' id='other' onclick='toggle_opt()'><label for='other'>Advanced</label>
 </fieldset>
 <div id='div_basic'>
@@ -364,11 +365,6 @@ const char sta_options_html[] PROGMEM = R"(<head><title>OpenGarage</title><meta 
 <tr><td><b>Blynk Domain:</b></td><td><input type='text' size=20 maxlength=32 id='bdmn' data-mini='true' value='-'></td></tr>
 <tr><td><b>Blynk Port:</b></td><td><input type='text' size=5 maxlength=5 id='bprt' data-mini='true' value=0></td></tr>
 <tr><td><b>IFTTT Key:</b></td><td><input type='text' size=20 maxlength=64 id='iftt' data-mini='true' value='-'></td></tr>
-<tr><td><b>MQTT Server:</b></td><td><input type='text' size=16 maxlength=20 id='mqtt' data-mini='true' value=''></td></tr>
-<tr><td><input type='checkbox' id='mqts' data-mini='true'><label for='mqts'>Use MQTT TLS</label></td></tr>
-<tr><td><b>MQTT Port:</b></td><td><input type='text' size=5 maxlength=5 id='mqpt' data-mini='true' value=0></td></tr>
-<tr><td><b>MQTT Username:</b></td><td><input type='text' size=16 maxlength=23 id='mqun' data-mini='true' value=''></td></tr>
-<tr><td><b>MQTT Password:</b></td><td><input type='password' size=16 maxlength=64 id='mqpw' data-mini='true' value=''></td></tr>
 </table>
 <table>
 <tr><td colspan=4><b>Choose Notifications:</b></td></tr>
@@ -380,6 +376,15 @@ const char sta_options_html[] PROGMEM = R"(<head><title>OpenGarage</title><meta 
 <tr><td colspan=4>If open after time:<small> (Use UTC 24hr format)</small>:</td></tr>
 <tr><td><input type='text' size=3 maxlength=3 id='atib' value=3 data-mini='true'></td><td> UTC:</td><td><input type='checkbox' id='atob0' data-mini='true'><label for='atob0'>Notify me</label></td><td><input type='checkbox' id='atob1' data-mini='true'><label for='atob1'>Auto-close</label></td></tr>
 </table><table>
+</table>
+</div>
+<div id='div_mqtt' style='display:none;'>
+<table cellpadding=1>
+<tr><td><b>MQTT Server:</b></td><td><input type='text' size=16 maxlength=20 id='mqtt' data-mini='true' value=''></td></tr>
+<tr><td><input type='checkbox' id='mqts' data-mini='true'><label for='mqts'>Use MQTT TLS</label></td></tr>
+<tr><td><b>MQTT Port:</b></td><td><input type='text' size=5 maxlength=5 id='mqpt' data-mini='true' value=0></td></tr>
+<tr><td><b>MQTT Username:</b></td><td><input type='text' size=16 maxlength=23 id='mqun' data-mini='true' value=''></td></tr>
+<tr><td><b>MQTT Password:</b></td><td><input type='password' size=16 maxlength=64 id='mqpw' data-mini='true' value=''></td></tr>
 </table>
 </div>
 <div id='div_other' style='display:none;'>
@@ -434,9 +439,11 @@ $('#subn').textinput($(this).is(':checked')?'enable':'disable');
 function toggle_opt() {
 $('#div_basic').hide();
 $('#div_cloud').hide();
+$('#div_mqtt').hide();
 $('#div_other').hide();
 if(eval_cb('#basic')) $('#div_basic').show();
 if(eval_cb('#cloud')) $('#div_cloud').show();
+if(eval_cb('#mqtt_opt')) $('#div_mqtt').show();
 if(eval_cb('#other')) $('#div_other').show();
 }
 $('#btn_back').click(function(e){
