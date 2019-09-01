@@ -142,6 +142,7 @@ typedef enum {
   OPTION_NAME,    // device name
   OPTION_IFTT,    // IFTTT token
   OPTION_MQTT,    // MQTT IP
+  OPTION_MQTS,    // MQTT Secure
   OPTION_MQPT,    // MQTT Port
   OPTION_MQUN,    // MQTT Username
   OPTION_MQPW,    // MQTT Password

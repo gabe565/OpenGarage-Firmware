@@ -365,6 +365,7 @@ const char sta_options_html[] PROGMEM = R"(<head><title>OpenGarage</title><meta 
 <tr><td><b>Blynk Port:</b></td><td><input type='text' size=5 maxlength=5 id='bprt' data-mini='true' value=0></td></tr>
 <tr><td><b>IFTTT Key:</b></td><td><input type='text' size=20 maxlength=64 id='iftt' data-mini='true' value='-'></td></tr>
 <tr><td><b>MQTT Server:</b></td><td><input type='text' size=16 maxlength=20 id='mqtt' data-mini='true' value=''></td></tr>
+<tr><td><input type='checkbox' id='mqts' data-mini='true'><label for='mqts'>Use MQTT TLS</label></td></tr>
 <tr><td><b>MQTT Port:</b></td><td><input type='text' size=5 maxlength=5 id='mqpt' data-mini='true' value=0></td></tr>
 <tr><td><b>MQTT Username:</b></td><td><input type='text' size=16 maxlength=23 id='mqun' data-mini='true' value=''></td></tr>
 <tr><td><b>MQTT Password:</b></td><td><input type='password' size=16 maxlength=64 id='mqpw' data-mini='true' value=''></td></tr>
@@ -474,6 +475,7 @@ comm+='&bdmn='+encodeURIComponent($('#bdmn').val());
 comm+='&bprt='+$('#bprt').val();
 comm+='&iftt='+encodeURIComponent($('#iftt').val());
 comm+='&mqtt='+encodeURIComponent($('#mqtt').val());
+comm+='&mqts='+($('#mqts').is(':checked')?1:0);
 comm+='&mqpt='+encodeURIComponent($('#mqpt').val());
 comm+='&mqun='+encodeURIComponent($('#mqun').val());
 comm+='&mqpw='+encodeURIComponent($('#mqpw').val());
@@ -529,6 +531,7 @@ $('#bdmn').val(jd.bdmn);
 $('#bprt').val(jd.bprt);
 $('#iftt').val(jd.iftt);
 $('#mqtt').val(jd.mqtt);
+if(jd.mqts>0) $('#mqts').attr('checked',true).checkboxradio('refresh');
 $('#mqpt').val(jd.mqpt);
 $('#mqun').val(jd.mqun);
 $('#mqpw').val(jd.mqpw);

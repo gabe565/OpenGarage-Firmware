@@ -45,8 +45,8 @@ static Ticker aux_ticker;
 static Ticker ip_ticker;
 static Ticker restart_ticker;
 
-static WiFiClient wificlient;
-PubSubClient mqttclient(wificlient);
+WiFiClient *wificlient = NULL;
+PubSubClient mqttclient;
 
 
 static String scanned_ssids;
@@ -747,6 +747,11 @@ void do_setup()
     delete server;
     server = NULL;
   }
+  if (wificlient) {
+    mqttclient.disconnect();
+    delete wificlient;
+    wificlient = NULL;
+  }
   WiFi.persistent(false); // turn off persistent, fixing flash crashing issue
   og.begin();
   og.options_setup();
@@ -765,7 +770,14 @@ void do_setup()
     DEBUG_PRINTLN(og.options[OPTION_HTP].ival);
   }
   led_blink_ms = LED_FAST_BLINK;
-  
+
+  if (og.options[OPTION_MQTS].ival) {
+      wificlient = new WiFiClientSecure();
+  } else {
+      wificlient = new WiFiClient();
+  }
+  mqttclient.setClient(*wificlient);
+
 }
 
 void process_ui()
