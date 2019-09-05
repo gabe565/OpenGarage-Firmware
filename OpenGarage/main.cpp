@@ -940,17 +940,26 @@ bool mqtt_connect_subscibe() {
         connected = mqttclient.connect(
           og.options[OPTION_NAME].sval.c_str(),
           og.options[OPTION_MQUN].sval.c_str(),
-          og.options[OPTION_MQPW].sval.c_str()
+          og.options[OPTION_MQPW].sval.c_str(),
+          (og.options[OPTION_NAME].sval + "/OUT/STATUS").c_str(),
+          1,
+          true,
+          "offline"
         );
       } else {
         connected = mqttclient.connect(
-          og.options[OPTION_NAME].sval.c_str()
+          og.options[OPTION_NAME].sval.c_str(),
+          (og.options[OPTION_NAME].sval + "/OUT/STATUS").c_str(),
+          1,
+          true,
+          "offline"
         );
       }
       if (connected) {
         mqttclient.setCallback(mqtt_callback);
         mqttclient.subscribe(og.options[OPTION_NAME].sval.c_str());
         mqttclient.subscribe((og.options[OPTION_NAME].sval +"/IN/#").c_str());
+        mqttclient.publish((og.options[OPTION_NAME].sval + "/OUT/STATUS").c_str(), "online", true);
         DEBUG_PRINTLN(F("......Success, Subscribed to MQTT Topic"));
         return true;
       }else {
