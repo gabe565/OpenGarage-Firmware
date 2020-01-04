@@ -341,6 +341,7 @@ const char sta_options_html[] PROGMEM = R"(<head><title>OpenGarage</title><meta 
 <option value=1>5 seconds</option>
 <option value=2>10 seconds</option>
 </select></td></tr>
+<tr><td colspan=2><input type='checkbox' id='aoo' data-mini='true'><label for='aoo'>Do not alarm when opening</label></td></tr>
 <tr><td><b>Log Size:<a href='#lszInfo' data-rel='popup' data-role='button' data-inline='true' data-transition='pop' data-icon='info' data-theme='c' data-iconpos='notext'>Important note</a><div data-role='popup' id='lszInfo' class='ui-content' data-theme='b' style='max-width:320px;'><p>If you change log size, please Clear Log for the new size to take effect.</p></div></b></td><td>
 <select name='lsz' id='lsz' data-mini='true'>
 <option value=20>20</option>
@@ -394,7 +395,8 @@ const char sta_options_html[] PROGMEM = R"(<head><title>OpenGarage</title><meta 
 <tr><td colspan=2><input type='checkbox' id='usi' data-mini='true'><label for='usi'>Use Static IP</label></td></tr>
 <tr><td><b>Device IP:</b></td><td><input type='text' size=15 maxlength=15 id='dvip' data-mini='true' disabled></td></tr>
 <tr><td><b>Gateway IP:</b></td><td><input type='text' size=15 maxlength=15 id='gwip' data-mini='true' disabled></td></tr>
-<tr><td><b>Subnet:</b></td><td><input type='text' size=15 maxlength=15 id='subn' data-mini='true' disabled></td></tr> 
+<tr><td><b>Subnet:</b></td><td><input type='text' size=15 maxlength=15 id='subn' data-mini='true' disabled></td></tr>
+<tr><td><b>DNS1:</b></td><td><input type='text' size=15 maxlength=15 id='dns1' data-mini='true' disabled></td></tr>
 <tr><td colspan=2><input type='checkbox' id='cb_key' data-mini='true'><label for='cb_key'>Change Device Key</label></td></tr>
 <tr><td><b>New Key:</b></td><td><input type='password' size=24 maxlength=32 id='nkey' data-mini='true' disabled></td></tr>
 <tr><td><b>Confirm:</b></td><td><input type='password' size=24 maxlength=32 id='ckey' data-mini='true' disabled></td></tr>      
@@ -435,6 +437,7 @@ $('#usi').click(function(e){
 $('#dvip').textinput($(this).is(':checked')?'enable':'disable');
 $('#gwip').textinput($(this).is(':checked')?'enable':'disable');
 $('#subn').textinput($(this).is(':checked')?'enable':'disable');
+$('#dns1').textinput($(this).is(':checked')?'enable':'disable');
 });
 function toggle_opt() {
 $('#div_basic').hide();
@@ -458,6 +461,7 @@ comm+='&dth='+$('#dth').val();
 comm+='&vth='+$('#vth').val();
 comm+='&riv='+$('#riv').val();
 comm+='&alm='+$('#alm').val();
+comm+='&aoo='+($('#aoo').is(':checked')?1:0);
 comm+='&lsz='+$('#lsz').val();
 comm+='&tsn='+$('#tsn').val();
 comm+='&htp='+$('#htp').val();
@@ -494,7 +498,7 @@ comm+='&nkey='+encodeURIComponent($('#nkey').val());
 comm+='&ckey='+encodeURIComponent($('#ckey').val());
 }
 if($('#usi').is(':checked')) {
-comm+='&usi=1&dvip='+($('#dvip').val())+'&gwip='+($('#gwip').val());
+comm+='&usi=1&dvip='+($('#dvip').val())+'&gwip='+($('#gwip').val())+'&subn='+($('#subn').val())+'&dns1='+($('#dns1').val());
 } else {
 comm+='&usi=0';
 }
@@ -513,6 +517,7 @@ $(document).ready(function() {
 $.getJSON('jo', function(jd) {
 $('#fwv').text((jd.fwv/100>>0)+'.'+(jd.fwv/10%10>>0)+'.'+(jd.fwv%10>>0));
 $('#alm').val(jd.alm).selectmenu('refresh');
+if(jd.aoo>0) $('#aoo').attr('checked',true).checkboxradio('refresh');
 $('#lsz').val(jd.lsz).selectmenu('refresh');
 $('#tsn').val(jd.tsn).selectmenu('refresh');
 $('#mnt').val(jd.mnt).selectmenu('refresh');
@@ -545,10 +550,12 @@ $('#mqpw').val(jd.mqpw);
 $('#dvip').val(jd.dvip);
 $('#gwip').val(jd.gwip);
 $('#subn').val(jd.subn);
+$('#dns1').val(jd.dns1);
 if(jd.usi>0) $('#usi').attr('checked',true).checkboxradio('refresh');
 $('#dvip').textinput(jd.usi>0?'enable':'disable');
 $('#gwip').textinput(jd.usi>0?'enable':'disable');
-$('#subn').textinput(jd.usi>0?'enable':'disable'); 
+$('#subn').textinput(jd.usi>0?'enable':'disable');
+$('#dns1').textinput(jd.usi>0?'enable':'disable');  
 });
 });
 </script>

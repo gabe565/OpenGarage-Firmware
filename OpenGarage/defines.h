@@ -119,6 +119,7 @@ typedef enum {
   OPTION_VTH,     // distance threshold vehicle detection
   OPTION_RIV,     // read interval
   OPTION_ALM,     // alarm mode
+  OPTION_AOO,			// no alarm on opening
   OPTION_LSZ,     // log size
   OPTION_TSN,     // temperature sensor type
   OPTION_HTP,     // http port
@@ -149,6 +150,7 @@ typedef enum {
   OPTION_DVIP,    // device IP
   OPTION_GWIP,    // gateway IP
   OPTION_SUBN,    // subnet
+  OPTION_DNS1,		// dns1 IP
   NUM_OPTIONS     // number of options
 } OG_OPTION_enum;
 
