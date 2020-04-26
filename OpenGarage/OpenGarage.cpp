@@ -51,6 +51,7 @@ OptionStruct OpenGarage::options[] = {
   {"lsz", DEFAULT_LOG_SIZE,400,""},
   {"tsn", OG_TSN_NONE, 255, ""},
   {"htp", 80,        65535, ""},
+  {"ntpe", 0,            1, ""},
   {"ntp", 0,      0, "-.-.-.-"},
   {"cdt", 1000,       5000, ""},
   {"dri", 500,        3000, ""},

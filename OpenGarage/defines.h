@@ -122,6 +122,7 @@ typedef enum {
   OPTION_LSZ,     // log size
   OPTION_TSN,     // temperature sensor type
   OPTION_HTP,     // http port
+  OPTION_NTPE,    // Custom NTP server enabled
   OPTION_NTP,     // NTP Server
   OPTION_CDT,     // click delay time
   OPTION_DRI,			// distance read interval

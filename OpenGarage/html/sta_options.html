@@ -77,7 +77,8 @@
 <div id='div_other' style='display:none;'>
 <table cellpadding=2>
 <tr><td><b>HTTP Port:</b></td><td><input type='text' size=5 maxlength=5 id='htp' value=0 data-mini='true'></td></tr>
-<tr><td><b>NTP Server:</b></td><td><input type='text' size=16 maxlength=20 id='ntp' value='' data-mini='true'></td></tr>
+<tr><td colspan=2><input type='checkbox' id='ntpe' data-mini='true'><label for='ntpe'>Use Custom NTP Server</label></td></tr>
+<tr><td><b>NTP Server:</b></td><td><input type='text' size=16 maxlength=20 id='ntp' data-mini='true'></td></tr>
 <tr><td colspan=2><input type='checkbox' id='usi' data-mini='true'><label for='usi'>Use Static IP</label></td></tr>
 <tr><td><b>Device IP:</b></td><td><input type='text' size=15 maxlength=15 id='dvip' data-mini='true' disabled></td></tr>
 <tr><td><b>Gateway IP:</b></td><td><input type='text' size=15 maxlength=15 id='gwip' data-mini='true' disabled></td></tr>
@@ -118,6 +119,9 @@ $('#cb_key').click(function(e){
 $('#nkey').textinput($(this).is(':checked')?'enable':'disable');
 $('#ckey').textinput($(this).is(':checked')?'enable':'disable');
 });
+$('#ntpe').click(function(e){
+$('#ntp').textinput($(this).is(':checked')?'enable':'disable');
+});
 $('#usi').click(function(e){
 $('#dvip').textinput($(this).is(':checked')?'enable':'disable');
 $('#gwip').textinput($(this).is(':checked')?'enable':'disable');
@@ -146,7 +150,6 @@ comm+='&alm='+$('#alm').val();
 comm+='&lsz='+$('#lsz').val();
 comm+='&tsn='+$('#tsn').val();
 comm+='&htp='+$('#htp').val();
-comm+='&ntp='+$('#ntp').val()
 comm+='&cdt='+$('#cdt').val();
 comm+='&dri='+$('#dri').val();
 comm+='&sto='+eval_cb('#to_cap');
@@ -173,6 +176,11 @@ if(!confirm('New device key is empty. Are you sure?')) return;
 }
 comm+='&nkey='+encodeURIComponent($('#nkey').val());
 comm+='&ckey='+encodeURIComponent($('#ckey').val());
+}
+if($('#ntpe').is(':checked')) {
+comm+='&ntpe=1&ntp='+($('#ntp').val());
+} else {
+comm+='&ntpe=0';
 }
 if($('#usi').is(':checked')) {
 comm+='&usi=1&dvip='+($('#dvip').val())+'&gwip='+($('#gwip').val());
@@ -203,7 +211,6 @@ $('#dth').val(jd.dth);
 $('#vth').val(jd.vth);
 $('#riv').val(jd.riv);
 $('#htp').val(jd.htp);
-$('#ntp').val(jd.ntp);
 $('#cdt').val(jd.cdt);
 $('#dri').val(jd.dri);
 if(jd.sto) $('#to_cap').attr('checked',true).checkboxradio('refresh');
@@ -219,9 +226,12 @@ $('#bdmn').val(jd.bdmn);
 $('#bprt').val(jd.bprt);
 $('#iftt').val(jd.iftt);
 $('#mqtt').val(jd.mqtt);
+$('#ntp').val(jd.ntp);
 $('#dvip').val(jd.dvip);
 $('#gwip').val(jd.gwip);
 $('#subn').val(jd.subn);
+if(jd.ntpe>0) $('#ntpe').attr('checked',true).checkboxradio('refresh');
+$('#ntp').textinput(jd.ntpe>0?'enable':'disable');
 if(jd.usi>0) $('#usi').attr('checked',true).checkboxradio('refresh');
 $('#dvip').textinput(jd.usi>0?'enable':'disable');
 $('#gwip').textinput(jd.usi>0?'enable':'disable');
